@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Food Calorie App</title>
+</head>
+<body style="text-align:center; font-family:Arial;">
+
+    <h1>Food Calorie Estimator</h1>
+
+    {% if startup_issues %}
+        <div style="max-width:700px; margin:20px auto; padding:16px; border:1px solid #d97706; background:#fff7ed; color:#9a3412; border-radius:8px;">
+            <h3 style="margin-top:0;">Setup needed before prediction</h3>
+            <p style="margin-bottom:8px;">The app can open in VS Code now, but prediction is paused until these items are ready:</p>
+            <ul style="text-align:left; display:inline-block; margin:0 auto 8px auto;">
+                {% for issue in startup_issues %}
+                    <li>{{ issue }}</li>
+                {% endfor %}
+            </ul>
+            {% if model_error %}
+                <p style="margin-bottom:0;"><strong>Model load detail:</strong> {{ model_error }}</p>
+            {% endif %}
+            {% if class_names_error %}
+                <p style="margin-bottom:0;"><strong>Class-label detail:</strong> {{ class_names_error }}</p>
+            {% endif %}
+        </div>
+    {% endif %}
+
+    <form method="POST" enctype="multipart/form-data">
+        <input type="file" name="image" required>
+        <br><br>
+        <button type="submit" {% if startup_issues %}disabled{% endif %}>Predict</button>
+    </form>
+
+    {% if startup_issues %}
+        <p style="max-width:700px; margin:16px auto; color:#57534e;">
+            Train the model once after adding your dataset. That will create both
+            <strong>models/food_model.h5</strong> and <strong>models/class_names.json</strong>,
+            so the app can predict later without re-reading the dataset folders.
+        </p>
+    {% endif %}
+
+    {% if error %}
+        <p style="color:#b91c1c; font-weight:bold;">{{ error }}</p>
+    {% endif %}
+
+    {% if image %}
+        <h3>Uploaded Image:</h3>
+        <img src="{{ image }}" width="300">
+    {% endif %}
+
+    {% if result %}
+        <h2>{{ result }}</h2>
+    {% endif %}
+
+</body>
+</html>
